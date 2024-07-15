@@ -1,0 +1,44 @@
+name: RPCore
+version: '${project.version}'
+main: teamrevolution.serverCore.RevoCore
+api-version: 1.20
+authors: [ BuildersInc, DanielderErbauer ]
+softdepend:
+
+commands:
+  charakter:
+  roleplay:
+    aliases:
+      - rp
+  supporting:
+  debug:
+    permission: revo.admin
+  customItem:
+    permission: revo.admin
+  equipment:
+  channel:
+    aliases:
+      - ch
+  support:
+    aliases:
+      - s
+  global:
+    aliases:
+      - g
+  flüstern:
+    aliases:
+      - fl
+  reden:
+    aliases:
+      - r
+  rufen:
+    aliases:
+      - ru
+  schreien:
+    aliases:
+      - sch
+  discord:
+    aliases:
+      - dc
+  travelTP:
+  travelAdd:

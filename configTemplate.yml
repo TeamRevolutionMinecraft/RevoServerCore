@@ -1,0 +1,19 @@
+Generic:
+  MC_Name:
+    "Builders_Inc"
+  RP_Name:
+    "Geiler Hans"
+  Race:
+    "Human"
+  Job:
+    "Genie"
+
+
+Specific:
+  Speed:
+    5
+  Agility:
+    5
+  Intelligence:
+    5
+
