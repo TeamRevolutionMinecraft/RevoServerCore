@@ -6,8 +6,7 @@ import net.kyori.adventure.translation.TranslationRegistry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import teamrevolution.serverCore.character.Character;
-import teamrevolution.serverCore.character.CharacterStorage;
+import teamrevolution.serverCore.character.RevoPlayer;
 import teamrevolution.serverCore.chat.RevoChat;
 import teamrevolution.serverCore.commands.*;
 import teamrevolution.serverCore.commands.admin.CmdCustomItem;
@@ -29,7 +28,8 @@ public class RevoCore extends JavaPlugin {
 
     private static RevoCore instance;
 
-    private HashMap<UUID, Character> onlinePlayers;
+    private HashMap<UUID, RevoPlayer> onlinePlayers;
+
     private QuickTravelManger quickTravelManger;
 
     @Override
@@ -104,7 +104,7 @@ public class RevoCore extends JavaPlugin {
         new CmdRoleplayNameToggle(this);
         new PlayerBadgeOpener(this);
 
-        CharacterStorage.init(this);
+        RevoPlayer.intiStorage();
         getLogger().info("Characters loaded");
     }
 
@@ -126,29 +126,22 @@ public class RevoCore extends JavaPlugin {
         new TablistTask(this);
     }
 
-    public HashMap<UUID, Character> getOnlinePlayers() {
-        return onlinePlayers;
-    }
-
     public void removePlayer(UUID uuid) {
         onlinePlayers.remove(uuid);
     }
 
-    /**
-     * @deprecated Use {@link RevoCore#getCharacter(UUID)} to handle nulls explicitly
-     */
-    public Character getRevoPlayer(UUID uuid) {
-        return onlinePlayers.get(uuid);
-    }
-
-    public Optional<Character> getCharacter(UUID uuid) {
-        return Optional.ofNullable(getRevoPlayer(uuid));
+    public Optional<RevoPlayer> getCharacter(UUID uuid) {
+        return Optional.ofNullable(onlinePlayers.get(uuid));
     }
 
     public void addPlayerToOnlineList(Player player) {
-        var revoPlayer = new Character(player);
-        onlinePlayers.put(player.getUniqueId(), new Character(player));
+        var revoPlayer = new RevoPlayer(player);
+        onlinePlayers.put(player.getUniqueId(), revoPlayer);
         getLogger().info("Added player " + revoPlayer);
+    }
+
+    public HashMap<UUID, RevoPlayer> getOnlinePlayers() {
+        return onlinePlayers;
     }
 
     public NamespacedKey getNamespacedKey(String key) {

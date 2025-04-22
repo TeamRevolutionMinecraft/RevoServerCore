@@ -13,12 +13,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import teamrevolution.serverCore.character.CharacterStorage;
 import teamrevolution.serverCore.gui.charakter.CharGui;
 import teamrevolution.serverCore.enums.Job;
 import teamrevolution.serverCore.enums.Race;
 import teamrevolution.serverCore.RevoCore;
-import teamrevolution.serverCore.character.Character;
 
 /**
  * Handles the input from the Char gui
