@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import teamrevolution.serverCore.character.RevoPlayer;
 import teamrevolution.serverCore.gui.charakter.CharGui;
 import teamrevolution.serverCore.enums.Job;
 import teamrevolution.serverCore.enums.Race;
@@ -33,7 +34,7 @@ public class CharacterGuiListener implements Listener {
     public void charGuiOnClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
-        Character character = RevoCore.getInstance().getRevoPlayer(player.getUniqueId());
+        RevoPlayer revoPlayer = RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow();
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem != null && clickedItem.hasItemMeta()) {
@@ -47,30 +48,30 @@ public class CharacterGuiListener implements Listener {
                 // TODO NullPointerException
                 // TODO also maybe use enum instead? functional decomposition?
                 switch (customID) {
-                    case "delete":
-                        ItemStack deleteCheckItem = new ItemStack(Material.PAPER);
-                        ItemMeta deleteCheckItemMeta = deleteCheckItem.getItemMeta();
-                        deleteCheckItemMeta.displayName(Component.text(" "));
-                        deleteCheckItem.setItemMeta(deleteCheckItemMeta);
-                        new AnvilGUI.Builder()
-                                .onClose(player1 ->  {player1.openInventory(CharGui.charCreateGui("main", player1));})
-                                .onComplete((player1, name) ->  {
-                                    if (name.equalsIgnoreCase(player1.getName())) {
-                                        // TODO use return value?
-                                        CharacterStorage.delete(player1.getUniqueId());
-                                    }
-                                    player.sendMessage(!CharacterStorage.isRegistered(player.getUniqueId()) ? "Dein char wurde gelöscht" : "Da ist etwas schiefgelaufen mit dem Löschen");
-                                    player.closeInventory();
-                                    return AnvilGUI.Response.close();
-                                })
-                                .itemLeft(deleteCheckItem)
-                                .title("Minecraft namen")
-                                .plugin(RevoCore.getInstance())
-                                .open(player);
-                        break;
+//                    case "delete":
+//                        ItemStack deleteCheckItem = new ItemStack(Material.PAPER);
+//                        ItemMeta deleteCheckItemMeta = deleteCheckItem.getItemMeta();
+//                        deleteCheckItemMeta.displayName(Component.text(" "));
+//                        deleteCheckItem.setItemMeta(deleteCheckItemMeta);
+//                        new AnvilGUI.Builder()
+//                                .onClose(player1 ->  {player1.openInventory(CharGui.charCreateGui("main", player1));})
+//                                .onComplete((player1, name) ->  {
+//                                    if (name.equalsIgnoreCase(player1.getName())) {
+//                                        // TODO use return value?
+//                                        CharacterStorage.delete(player1.getUniqueId());
+//                                    }
+//                                    player.sendMessage(!CharacterStorage.isRegistered(player.getUniqueId()) ? "Dein char wurde gelöscht" : "Da ist etwas schiefgelaufen mit dem Löschen");
+//                                    player.closeInventory();
+//                                    return AnvilGUI.Response.close();
+//                                })
+//                                .itemLeft(deleteCheckItem)
+//                                .title("Minecraft namen")
+//                                .plugin(RevoCore.getInstance())
+//                                .open(player);
+//                        break;
 
                     case "save":
-                        if (CharacterStorage.store(character.getPlayer().getUniqueId(), character.getCharacterData())) {
+                        if (revoPlayer.store()) {
                             player.sendMessage(Component.text("Der char wurde erfolgreich gespeichert. Viel Spaß :)"));
                         } else {
                             player.sendMessage(Component.text("Da ist etwas schiefgegangen probiere es bitte noch einmal"));
@@ -99,7 +100,7 @@ public class CharacterGuiListener implements Listener {
                         new AnvilGUI.Builder()
                                 .onClose(player1 ->  {player1.openInventory(CharGui.charCreateGui("main", player1));})
                                 .onComplete((player1, name) ->  {
-                                    character.getCharacterData().setRoleplayName(name);
+                                    revoPlayer.getRoleplayData().setRolePlayName(name);
                                     return AnvilGUI.Response.openInventory(CharGui.charCreateGui("main", player1));
                                 })
                                 .itemLeft(nameItem)
@@ -118,7 +119,7 @@ public class CharacterGuiListener implements Listener {
                     case "raceSelectTipas":
                     case "raceSelectGamta":
                         var race = Race.valueOf(StringUtils.substringAfter(customID, "raceSelect").toUpperCase());
-                        character.getCharacterData().setRace(race);
+                        revoPlayer.getRoleplayData().setRace(race);
                         player.openInventory(CharGui.charCreateGui("main", player));
                         break;
 
@@ -132,7 +133,7 @@ public class CharacterGuiListener implements Listener {
                     case "jobSelectALCHEMIST":
                     case "jobSelectSCHOLAR":
                         var job = Job.valueOf(StringUtils.substringAfter(customID, "jobSelect").toUpperCase());
-                        character.getCharacterData().setJob(job);
+                        revoPlayer.getRoleplayData().setJob(job);
                         player.openInventory(CharGui.charCreateGui("main", player));
                         break;
 

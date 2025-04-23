@@ -46,4 +46,16 @@ public class Preferences implements IProperty{
     public void setQuick_menu(boolean quick_menu) {
         this.quick_menu = quick_menu;
     }
+
+    public List<ChatChannel> getSubscribesChannels() {
+        return subscribesChannels;
+    }
+
+    public void subScripeChannel(ChatChannel c) {
+        this.subscribesChannels.add(c);
+    }
+
+    public void unSubScribeChannel(ChatChannel c) {
+        this.subscribesChannels.remove(c);
+    }
 }

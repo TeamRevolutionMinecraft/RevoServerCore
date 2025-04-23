@@ -22,9 +22,9 @@ public class CmdRoleplayNameToggle extends PlayerCommand {
             var hoverEvent = HoverEvent.showText(Component.text("Klicke hier für mehr Infos über den RP Modus"));
             var clickEvent = ClickEvent.openUrl("https://www.google.de/");
 
-            character.toggleRoleplaying();
+            character.getRoleplayData().toggleRolePlaying();
 
-            var message = Component.translatable(character.isRoleplaying() ? "command.roleplay.mode_enabled" : "command.roleplay.mode_disabled")
+            var message = Component.translatable(character.getRoleplayData().isRolePlaying() ? "command.roleplay.mode_enabled" : "command.roleplay.mode_disabled")
                             .color(TextColor.color(NamedTextColor.GRAY)).hoverEvent(hoverEvent).clickEvent(clickEvent);
 
             player.sendMessage(message);

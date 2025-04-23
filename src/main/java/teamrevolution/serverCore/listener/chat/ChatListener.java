@@ -9,10 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import teamrevolution.serverCore.character.RevoPlayer;
 import teamrevolution.serverCore.chat.MessageBuilder;
 import teamrevolution.serverCore.enums.ChatChannel;
 import teamrevolution.serverCore.RevoCore;
-import teamrevolution.serverCore.character.Character;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +28,18 @@ public class ChatListener implements Listener {
         var sendingPlayer = event.getPlayer();
         logMessage(sendingPlayer, event.originalMessage());
 
-        Character character = RevoCore.getInstance().getRevoPlayer(sendingPlayer.getUniqueId());
+        RevoPlayer character = RevoCore.getInstance().getCharacter(sendingPlayer.getUniqueId()).orElseThrow();
         event.setCancelled(true);
-        if (character.isEditMode() != null) {
-            switch (character.isEditMode()) {
+        if (character.getPlayerEditMode() != null) {
+            switch (character.getPlayerEditMode()) {
                 case LOOK -> {
                     List<String> text = new ArrayList<>();
                     for (String s : PlainTextComponentSerializer.plainText().serialize(event.originalMessage()).split("\\|")) {
                         text.add(s.trim());
                     }
-                    character.getCharacterData().setLookDescription(text);
                 }
             }
-            character.setEditMode(null);
+            character.setPlayerEditMode(null);
             return;
         }
 
@@ -69,7 +68,7 @@ public class ChatListener implements Listener {
         int range = (chat == ChatChannel.OOC) ? -1 : character.getCurrentChannel().getRange();
 
         Bukkit.getOnlinePlayers().forEach(receivingPlayer -> {
-            if (RevoCore.getInstance().getRevoPlayer(receivingPlayer.getUniqueId()).getActiveChannels().contains(character.getCurrentChannel())) {
+            if (RevoCore.getInstance().getCharacter(receivingPlayer.getUniqueId()).orElseThrow().getPreferences().getSubscribesChannels().contains(character.getCurrentChannel())) {
                 Location recievingPlayerLocation = receivingPlayer.getLocation();
                 if (range == -1) {
                     receivingPlayer.sendMessage(MessageBuilder.getGlobalMessage(sendingPlayer, event.originalMessage()));

@@ -3,7 +3,7 @@ package teamrevolution.serverCore.listener.chat;
 
 import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
-import teamrevolution.serverCore.character.Character;
+import teamrevolution.serverCore.character.RevoPlayer;
 import teamrevolution.serverCore.chat.MessageBuilder;
 import teamrevolution.serverCore.chat.RevoChat;
 import teamrevolution.serverCore.enums.ChatChannel;
@@ -69,7 +69,7 @@ public class DiscordListener {
     public void sendMinecraftMessage(HashMap<String, String> msg) {
         Bukkit.getOnlinePlayers().forEach(player -> {
 
-            if (RevoCore.getInstance().getRevoPlayer(player.getUniqueId()).getActiveChannels().contains(ChatChannel.DISCORD)) {
+            if (RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow().getPreferences().getSubscribesChannels().contains(ChatChannel.DISCORD)) {
                 player.sendMessage(MessageBuilder.getMessageFromDiscord(msg));
             }
         });
@@ -77,13 +77,13 @@ public class DiscordListener {
     public void sendMinecraftMessage(String msgSender, String msg) {
         Bukkit.getOnlinePlayers().forEach(player -> {
 
-            if (RevoCore.getInstance().getRevoPlayer(player.getUniqueId()).getActiveChannels().contains(ChatChannel.DISCORD)) {
+            if (RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow().getPreferences().getSubscribesChannels().contains(ChatChannel.DISCORD)) {
                 player.sendMessage(MessageBuilder.getMessageFromDiscord(msgSender, msg));
             }
         });
     }
 
-    public void sendDiscordMessage(Character sender, String content) {
+    public void sendDiscordMessage(RevoPlayer sender, String content) {
         JSONObject data = new JSONObject();
         JSONObject body = new JSONObject();
 

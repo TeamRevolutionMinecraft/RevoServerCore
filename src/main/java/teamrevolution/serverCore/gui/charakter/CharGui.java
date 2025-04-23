@@ -4,14 +4,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import teamrevolution.serverCore.RevoCore;
-import teamrevolution.serverCore.character.Character;
+import teamrevolution.serverCore.character.RevoPlayer;
 import teamrevolution.serverCore.gui.GuiUtils;
 
 
 public class CharGui {
     private static final String keyValue = "charGuiId";
     public static Inventory charCreateGui(String typeOfIventory, Player player) {
-        Character character = RevoCore.getInstance().getRevoPlayer(player.getUniqueId());
+        RevoPlayer character = RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow();
         String nameOfInventory = "Etwas ist falsch gelaufen";
         int height = -1;
         Inventory gui;

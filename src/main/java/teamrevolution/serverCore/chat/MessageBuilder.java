@@ -7,7 +7,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import teamrevolution.serverCore.character.Character;
+import teamrevolution.serverCore.character.RevoPlayer;
 import teamrevolution.serverCore.enums.ChatChannel;
 import teamrevolution.serverCore.enums.Rank;
 import teamrevolution.serverCore.utils.LuckyPermsIntegration;
@@ -21,16 +21,7 @@ public class MessageBuilder {
     private static final String globalChatPrefix = ChatChannel.OOC.getPrefix();
     private static final ChatColor emoteColor = ChatColor.YELLOW;
 
-    //TODO Refactor this shit
-
-    /**
-     * Creates a formatted message for the Chat
-     * It contains the rang, the name and the message
-     * @param player sending player
-     * @param originalMsg to send message
-     * @return the formatted message
-     */
-    public static Component getFormattedMessage(Character player, Component originalMsg) {
+    public static Component getFormattedMessage(RevoPlayer player, Component originalMsg) {
         String name = ChatColor.GRAY + player.getPlayer().getName();
         Rank rank = LuckyPermsIntegration.getRankFromPlayer(player.getPlayer());
         String msg = msgToString(originalMsg);
@@ -41,8 +32,8 @@ public class MessageBuilder {
         }
 
 
-        if (player.isRoleplaying()) {
-            name = player.getCharacterData().getRoleplayName();
+        if (player.getRoleplayData().isRolePlaying()) {
+            name = player.getRoleplayData().getRolePlayName();
             if (player.getCurrentChannel() == ChatChannel.SCHREIEN) {
                 msg = msg.toUpperCase();
             }
@@ -58,13 +49,6 @@ public class MessageBuilder {
 
     }
 
-    /**
-     * Used to Build a support Message
-     * @param player sending Player
-     * @param originalMsg chat message
-     * @param teleport boolean if player tp to player command is embedded
-     * @return supportmessage
-     */
     public static Component getSupportMessage(Player player, Component originalMsg, boolean teleport) {
         Component name = Component.text(player.getName());
 
@@ -85,6 +69,7 @@ public class MessageBuilder {
                 .append(Component.text(": "))
                 .append(Component.text(msg));
     }
+
 
     public static Component getGlobalMessage(Player player, Component originalMsg) {
 
@@ -123,20 +108,14 @@ public class MessageBuilder {
         return sender + " -> " + content;
     }
 
-
-    /**
-     * Converts Text Component into String
-     * @param msg Message as Component
-     * @return Message as String
-     */
     private static String msgToString(Component msg) {
         return PlainTextComponentSerializer.plainText().serialize(msg);
     }
 
-    private static Component getEmoteChatMessage(Character player, String msg) {
+    private static Component getEmoteChatMessage(RevoPlayer player, String msg) {
         msg = msg.replaceFirst("~", "");
 
-        String name = player.isRoleplaying() ? player.getCharacterData().getRoleplayName() : player.getPlayer().getName();
+        String name = player.getRoleplayData().isRolePlaying() ? player.getRoleplayData().getRolePlayName() : player.getPlayer().getName();
 
         return Component.text(ChatColor.GOLD + name).hoverEvent(HoverEvent.showText(Component.text(player.getPlayer().getName())))
                 .append(space)

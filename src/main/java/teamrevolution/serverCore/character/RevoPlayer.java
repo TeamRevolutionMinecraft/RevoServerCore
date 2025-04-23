@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import teamrevolution.serverCore.RevoCore;
 import teamrevolution.serverCore.enums.ChatChannel;
+import teamrevolution.serverCore.enums.PlayerEditMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +20,15 @@ public class RevoPlayer {
         return Paths.get(STORAGE_PATH + "/" + uuid + ".yml");
     }
 
-    private Player player;
+    private final Player player;
     private ChatChannel currentChannel;
+    private PlayerEditMode playerEditMode;
 
     private Brain brain;
     private Preferences preferences;
     private RoleplayData roleplayData;
+
+    private AdminData adminData;
 
     public static void intiStorage() {
         Plugin plugin = RevoCore.getInstance();
@@ -42,10 +46,12 @@ public class RevoPlayer {
     public RevoPlayer(Player player) {
         this.player = player;
         var file = getPath(player.getUniqueId()).toFile();
+        this.playerEditMode = null;
         if (file.exists()) {
             // Player is known to the System
             var yamlConfig = YamlConfiguration.loadConfiguration(file);
             this.currentChannel = ChatChannel.valueOf(yamlConfig.getString("MISC.currentChannel"));
+
 
             this.brain = new Brain(yamlConfig);
             this.preferences = new Preferences(yamlConfig);
@@ -58,13 +64,6 @@ public class RevoPlayer {
 
     }
 
-    public Brain getBrain() {
-        return brain;
-    }
-
-    public Preferences getPreferences() {
-        return preferences;
-    }
 
     public boolean store() {
         Plugin plugin = RevoCore.getInstance();
@@ -86,6 +85,9 @@ public class RevoPlayer {
 
         yamlConfig.set("MISC.currentChannel", currentChannel);
 
+        adminData.updateYamlConfig(yamlConfig);
+        plugin.getLogger().info("ADMIN DATA Appended");
+
         try {
             yamlConfig.save(dataFile);
             return true;
@@ -93,5 +95,41 @@ public class RevoPlayer {
             plugin.getLogger().severe("Failed to save player data for " + player.getUniqueId());
             return false;
         }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Brain getBrain() {
+        return brain;
+    }
+
+    public Preferences getPreferences() {
+        return preferences;
+    }
+
+    public RoleplayData getRoleplayData() {
+        return roleplayData;
+    }
+
+    public AdminData getAdminData() {
+        return adminData;
+    }
+
+    public ChatChannel getCurrentChannel() {
+        return currentChannel;
+    }
+
+    public void setCurrentChannel(ChatChannel currentChannel) {
+        this.currentChannel = currentChannel;
+    }
+
+    public PlayerEditMode getPlayerEditMode() {
+        return playerEditMode;
+    }
+
+    public void setPlayerEditMode(PlayerEditMode playerEditMode) {
+        this.playerEditMode = playerEditMode;
     }
 }

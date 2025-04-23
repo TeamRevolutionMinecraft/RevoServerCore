@@ -20,7 +20,6 @@ import teamrevolution.serverCore.fastTravel.CommandQuickTravelTeleport;
 import teamrevolution.serverCore.fastTravel.QuickTravelManger;
 import teamrevolution.serverCore.listener.*;
 import teamrevolution.serverCore.listener.gui.*;
-import teamrevolution.serverCore.tasks.TablistTask;
 
 import java.util.*;
 
@@ -102,7 +101,6 @@ public class RevoCore extends JavaPlugin {
         new CmdActivateSupportMode(this);
         new CharacterGuiListener(this);
         new CmdRoleplayNameToggle(this);
-        new PlayerBadgeOpener(this);
 
         RevoPlayer.intiStorage();
         getLogger().info("Characters loaded");
@@ -120,10 +118,6 @@ public class RevoCore extends JavaPlugin {
 
         new CommandQuickTravelAdd(this);
         new CommandQuickTravelTeleport(this);
-    }
-
-    private void startTasks() {
-        new TablistTask(this);
     }
 
     public void removePlayer(UUID uuid) {

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import teamrevolution.serverCore.character.CharacterStorage;
 import teamrevolution.serverCore.commands.MenuCommand;
 import teamrevolution.serverCore.commands.CommandComponents;
 import teamrevolution.serverCore.gui.charakter.CharGui;
@@ -27,46 +26,48 @@ public class CmdCharacter extends MenuCommand {
         // TODO i18n
 
         this.actions.put("erstellen", ((player, command, label, args) -> {
-            if (CharacterStorage.isRegistered(player.getUniqueId())) {
-                player.sendMessage(Component.textOfChildren(
-                        Component.translatable("command.character.character_already_exists"),
-                        Component.translatable("command.character.change_proposal")
-                ));
-            } else {
+//            if (CharacterStorage.isRegistered(player.getUniqueId())) {
+//                player.sendMessage(Component.textOfChildren(
+//                        Component.translatable("command.character.character_already_exists"),
+//                        Component.translatable("command.character.change_proposal")
+//                ));
+//            }
+//            else {
                 Inventory inventory = CharGui.charCreateGui("main", player);
                 player.openInventory(inventory);
-            }
+//            }
+
         }));
         this.actions.put("ändern", (player, command, label, args) -> {
             if (!player.hasPermission("revo.changeChar")) {
                 player.sendMessage(CommandComponents.COMMAND_NO_PERMISSION);
-            } else if (!CharacterStorage.isRegistered(player.getUniqueId())) {
-                player.sendMessage(Component.textOfChildren(
-                        Component.translatable("command.character.no_character_created"),
-                        Component.translatable("command.character.create_proposal")
-                ));
+//            } else if (!CharacterStorage.isRegistered(player.getUniqueId())) {
+//                player.sendMessage(Component.textOfChildren(
+//                        Component.translatable("command.character.no_character_created"),
+//                        Component.translatable("command.character.create_proposal")
+//                ));
             } else {
                 player.openInventory(CharGui.charCreateGui("main", player));
             }
         });
-        this.actions.put("löschen", (player, command, label, args) -> {
-            if (!CharacterStorage.isRegistered(player.getUniqueId())) {
-                player.sendMessage(Component.translatable("command.character.no_character_created"));
-            } else {
-                // TODO inconsistent argument language
-                if (args.length == 2 && args[0].equalsIgnoreCase("force") && player.hasPermission("revo.Admin")) {
-                    var playerToRemove = Bukkit.getPlayerExact(args[1]);
-                    if (playerToRemove != null && CharacterStorage.delete(playerToRemove.getUniqueId())) {
-                        player.sendMessage(Component.translatable());
-                        player.sendMessage(Component.translatable("command.character.delete_successful", Component.text(args[1])));
-                    } else {
-                        player.sendMessage(Component.translatable("command.character.delete_failed", Component.text(args[1])));
-                    }
-                } else {
-                    player.openInventory(CharGui.charCreateGui("deleteMenu", player));
-                }
-            }
-        });
+//        this.actions.put("löschen", (player, command, label, args) -> {
+//            if (!CharacterStorage.isRegistered(player.getUniqueId())) {
+//                player.sendMessage(Component.translatable("command.character.no_character_created"));
+//            } else {
+//                // TODO inconsistent argument language
+//                if (args.length == 2 && args[0].equalsIgnoreCase("force") && player.hasPermission("revo.Admin")) {
+//                    var playerToRemove = Bukkit.getPlayerExact(args[1]);
+//                    if (playerToRemove != null && CharacterStorage.delete(playerToRemove.getUniqueId())) {
+//                        player.sendMessage(Component.translatable());
+//                        player.sendMessage(Component.translatable("command.character.delete_successful", Component.text(args[1])));
+//                    } else {
+//                        player.sendMessage(Component.translatable("command.character.delete_failed", Component.text(args[1])));
+//                    }
+//                } else {
+//                    player.openInventory(CharGui.charCreateGui("deleteMenu", player));
+//                }
+//            }
+//        });
         this.actions.put("auswählen", (player, command, label, args) -> {
             if (!player.hasPermission("revo.rank.spielleiter")) {
                 // TODO Rewrite rank to use adventure api colors
@@ -78,7 +79,7 @@ public class CmdCharacter extends MenuCommand {
         });
         this.actions.put("aussehen", (player, command, label, args) -> {
             RevoCore.getInstance().getCharacter(player.getUniqueId()).ifPresent(revoPlayer -> {
-                revoPlayer.setEditMode(PlayerEditMode.LOOK);
+                revoPlayer.setPlayerEditMode(PlayerEditMode.LOOK);
                 player.sendMessage(Component.translatable("command.character.describe_your_character"));
             });
         });

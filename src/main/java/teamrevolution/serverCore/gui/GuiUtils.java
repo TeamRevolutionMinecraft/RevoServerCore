@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import teamrevolution.serverCore.RevoCore;
-import teamrevolution.serverCore.character.Character;
+import teamrevolution.serverCore.character.RevoPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GuiUtils {
      * @param player player who is executing
      * @return the created Item
      */
-    public static ItemStack createItemWithPlayerInfo(String keyString, String label, Material material, String id, boolean glint, Character player) {
+    public static ItemStack createItemWithPlayerInfo(String keyString, String label, Material material, String id, boolean glint, RevoPlayer player) {
         var key = RevoCore.getInstance().getNamespacedKey(keyString);
         Component name = Component.text(label);
         ItemStack item = new ItemStack(material);
@@ -62,7 +62,7 @@ public class GuiUtils {
      * @param player player who is executing
      * @return the created Item
      */
-    public static ItemStack createItemWithPlayerInfo(String keyString, String label, String url, String id, Character player) {
+    public static ItemStack createItemWithPlayerInfo(String keyString, String label, String url, String id, RevoPlayer player) {
         Component name = Component.text(label);
         ArrayList<Component> loreArray = new ArrayList<>();
         String loreString = updateLoreText(player, id);
@@ -236,11 +236,11 @@ public class GuiUtils {
      * @param id CustomId for seperation
      * @return loreString
      */
-    private static String updateLoreText(Character player, String id) {
+    private static String updateLoreText(RevoPlayer player, String id) {
         return switch (id) {
-            case "raceSelect" -> player.getCharacterData().getRace().toString();
-            case "jobSelect" -> player.getCharacterData().getJob().toString();
-            case "nameSelect" -> player.getCharacterData().getRoleplayName();
+            case "raceSelect" -> player.getRoleplayData().getRace().toString();
+            case "jobSelect" -> player.getRoleplayData().getJob().toString();
+            case "nameSelect" -> player.getRoleplayData().getRolePlayName();
             default -> " ";
         };
     }

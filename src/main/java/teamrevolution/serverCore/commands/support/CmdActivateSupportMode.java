@@ -26,13 +26,13 @@ public class CmdActivateSupportMode extends PlayerCommand {
             //TODO add errormessage
             return;
         }
-        var character = RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow();
+        var revoPlayer = RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow();
 
-        if (character.isCurrentlySupporting()) {
+        if (revoPlayer.getAdminData().isCurrently_supporting()) {
             RevoCore.getInstance().getLogger().info(" [SUPPORT] " + player.getName() + " is no longer supporting");
         } else {
             RevoCore.getInstance().getLogger().info(" [SUPPORT] " + player.getName() + " is now supporting");
         }
-        character.setCurrentlySupporting(!character.isCurrentlySupporting());
+        revoPlayer.getAdminData().setCurrently_supporting(!revoPlayer.getAdminData().isCurrently_supporting());
     }
 }

@@ -23,6 +23,5 @@ public class CmdDebug extends PlayerCommand {
         }
         var character = RevoCore.getInstance().getCharacter(player.getUniqueId()).orElseThrow();
         player.sendMessage(character.toString());
-        player.openInventory(character.getBadge());
     }
 }
