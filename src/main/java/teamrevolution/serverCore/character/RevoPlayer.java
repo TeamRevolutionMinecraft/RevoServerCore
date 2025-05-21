@@ -1,5 +1,7 @@
 package teamrevolution.serverCore.character;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -7,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import teamrevolution.serverCore.RevoCore;
 import teamrevolution.serverCore.enums.ChatChannel;
 import teamrevolution.serverCore.enums.PlayerEditMode;
+import teamrevolution.serverCore.exceptions.PlayerCannotBeLoaded;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +24,7 @@ public class RevoPlayer {
     }
 
     private final Player player;
+    private final OfflinePlayer offlinePlayer;
     private ChatChannel currentChannel;
     private PlayerEditMode playerEditMode;
 
@@ -45,6 +49,7 @@ public class RevoPlayer {
 
     public RevoPlayer(Player player) {
         this.player = player;
+        this.offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
         var file = getPath(player.getUniqueId()).toFile();
         this.playerEditMode = null;
         if (file.exists()) {
@@ -61,6 +66,21 @@ public class RevoPlayer {
             player.sendMessage("Hallo");
             this.currentChannel = ChatChannel.OOC;
         }
+
+    }
+    public RevoPlayer(UUID uuid) {
+        // Wrapper mostly for use in Brain Logic
+        this.player = null;
+        this.offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        var file = getPath(uuid).toFile();
+        if (!file.exists()) {
+            var logger = RevoCore.getInstance().getLogger();
+            logger.severe("Player with uuid" + uuid + "was not able to be loaded");
+            throw new PlayerCannotBeLoaded(uuid);
+        }
+        var yamlConfig = YamlConfiguration.loadConfiguration(file);
+
+        this.roleplayData = new RoleplayData(yamlConfig);
 
     }
 
@@ -101,6 +121,9 @@ public class RevoPlayer {
         return player;
     }
 
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
+    }
     public Brain getBrain() {
         return brain;
     }
@@ -131,5 +154,18 @@ public class RevoPlayer {
 
     public void setPlayerEditMode(PlayerEditMode playerEditMode) {
         this.playerEditMode = playerEditMode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        RevoPlayer other = (RevoPlayer) obj;
+        return offlinePlayer.getUniqueId().equals(other.getOfflinePlayer().getUniqueId());
+    }
+
+    @Override
+    public int hashCode() {
+        return offlinePlayer.getUniqueId().hashCode();
     }
 }
